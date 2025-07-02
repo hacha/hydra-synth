@@ -63,8 +63,9 @@ class GeneratorFactory {
       }
       
       // Add function aliases
-      if (method === 'modulate') {
-        this.sourceClass.prototype.mod = this.sourceClass.prototype.modulate
+      if (method.startsWith('modulate')) {
+        const aliasName = method.replace('modulate', 'mod')
+        this.sourceClass.prototype[aliasName] = this.sourceClass.prototype[method]
       }
     }
     return undefined
