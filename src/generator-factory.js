@@ -61,6 +61,11 @@ class GeneratorFactory {
         this.transforms.push({name: method, transform: transform, userArgs: args, synth: self})
         return this
       }
+      
+      // Add function aliases
+      if (method === 'modulate') {
+        this.sourceClass.prototype.mod = this.sourceClass.prototype.modulate
+      }
     }
     return undefined
   }
