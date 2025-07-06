@@ -1452,7 +1452,31 @@ class GeneratorFactory {
         type: 'add',
         synth: this,
         method
-      });
+      }); // Add function aliases for src functions
+
+      if (method === 'gradient') {
+        this.generators.grad = this.generators.gradient;
+        this.changeListener({
+          type: 'add',
+          synth: this,
+          method: 'grad'
+        });
+      } else if (method === 'voronoi') {
+        this.generators.vor = this.generators.voronoi;
+        this.changeListener({
+          type: 'add',
+          synth: this,
+          method: 'vor'
+        });
+      } else if (method === 'noise') {
+        this.generators.noi = this.generators.noise;
+        this.changeListener({
+          type: 'add',
+          synth: this,
+          method: 'noi'
+        });
+      }
+
       return func;
     } else {
       this.sourceClass.prototype[method] = function (...args) {
@@ -1463,7 +1487,69 @@ class GeneratorFactory {
           synth: self
         });
         return this;
-      };
+      }; // Add function aliases
+
+
+      if (method.startsWith('modulate')) {
+        const aliasName = method.replace('modulate', 'mod');
+        this.sourceClass.prototype[aliasName] = this.sourceClass.prototype[method]; // Add additional short aliases for specific modulate functions
+
+        if (method === 'modulateRepeat') {
+          this.sourceClass.prototype.modRep = this.sourceClass.prototype[method];
+        } else if (method === 'modulateRepeatX') {
+          this.sourceClass.prototype.modRepX = this.sourceClass.prototype[method];
+        } else if (method === 'modulateRepeatY') {
+          this.sourceClass.prototype.modRepY = this.sourceClass.prototype[method];
+        } else if (method === 'modulateKaleid') {
+          this.sourceClass.prototype.modKal = this.sourceClass.prototype[method];
+        } else if (method === 'modulateScrollX') {
+          this.sourceClass.prototype.modScrX = this.sourceClass.prototype[method];
+        } else if (method === 'modulateScrollY') {
+          this.sourceClass.prototype.modScrY = this.sourceClass.prototype[method];
+        } else if (method === 'modulateScale') {
+          this.sourceClass.prototype.modSca = this.sourceClass.prototype[method];
+        } else if (method === 'modulatePixelate') {
+          this.sourceClass.prototype.modPix = this.sourceClass.prototype[method];
+        } else if (method === 'modulateRotate') {
+          this.sourceClass.prototype.modRot = this.sourceClass.prototype[method];
+        } else if (method === 'modulateHue') {
+          this.sourceClass.prototype.modHue = this.sourceClass.prototype[method];
+        }
+      } else if (method === 'posterize') {
+        this.sourceClass.prototype.pstr = this.sourceClass.prototype.posterize;
+      } else if (method === 'pixelate') {
+        this.sourceClass.prototype.pix = this.sourceClass.prototype.pixelate;
+      } else if (method === 'brightness') {
+        this.sourceClass.prototype.bri = this.sourceClass.prototype.brightness;
+      } else if (method === 'saturate') {
+        this.sourceClass.prototype.sat = this.sourceClass.prototype.saturate;
+      } else if (method === 'contrast') {
+        this.sourceClass.prototype.cont = this.sourceClass.prototype.contrast;
+      } else if (method === 'repeat') {
+        this.sourceClass.prototype.rep = this.sourceClass.prototype.repeat;
+      } else if (method === 'repeatX') {
+        this.sourceClass.prototype.repX = this.sourceClass.prototype.repeatX;
+      } else if (method === 'repeatY') {
+        this.sourceClass.prototype.repY = this.sourceClass.prototype.repeatY;
+      } else if (method === 'scroll') {
+        this.sourceClass.prototype.scr = this.sourceClass.prototype.scroll;
+      } else if (method === 'scrollX') {
+        this.sourceClass.prototype.scrX = this.sourceClass.prototype.scrollX;
+      } else if (method === 'scrollY') {
+        this.sourceClass.prototype.scrY = this.sourceClass.prototype.scrollY;
+      } else if (method === 'rotate') {
+        this.sourceClass.prototype.rot = this.sourceClass.prototype.rotate;
+      } else if (method === 'thresh') {
+        this.sourceClass.prototype.thr = this.sourceClass.prototype.thresh;
+      } else if (method === 'color') {
+        this.sourceClass.prototype.col = this.sourceClass.prototype.color;
+      } else if (method === 'invert') {
+        this.sourceClass.prototype.inv = this.sourceClass.prototype.invert;
+      } else if (method === 'scale') {
+        this.sourceClass.prototype.sca = this.sourceClass.prototype.scale;
+      } else if (method === 'mult') {
+        this.sourceClass.prototype.mul = this.sourceClass.prototype.mult;
+      }
     }
 
     return undefined;

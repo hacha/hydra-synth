@@ -63,6 +63,9 @@ class GeneratorFactory {
       } else if (method === 'voronoi') {
         this.generators.vor = this.generators.voronoi
         this.changeListener({ type: 'add', synth: this, method: 'vor' })
+      } else if (method === 'noise') {
+        this.generators.noi = this.generators.noise
+        this.changeListener({ type: 'add', synth: this, method: 'noi' })
       }
       
       return func
