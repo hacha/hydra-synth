@@ -136,6 +136,8 @@ class GeneratorFactory {
         this.sourceClass.prototype.sca = this.sourceClass.prototype.scale
       } else if (method === 'mult') {
         this.sourceClass.prototype.mul = this.sourceClass.prototype.mult
+      } else if (method === 'colorama') {
+        this.sourceClass.prototype.colama = this.sourceClass.prototype.colorama
       }
     }
     return undefined
