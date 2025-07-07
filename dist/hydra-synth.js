@@ -1549,6 +1549,8 @@ class GeneratorFactory {
         this.sourceClass.prototype.sca = this.sourceClass.prototype.scale;
       } else if (method === 'mult') {
         this.sourceClass.prototype.mul = this.sourceClass.prototype.mult;
+      } else if (method === 'colorama') {
+        this.sourceClass.prototype.colama = this.sourceClass.prototype.colorama;
       }
     }
 
@@ -3450,6 +3452,8 @@ var _default = {
       return this;
     };
 
+    Array.prototype.f = Array.prototype.fast;
+
     Array.prototype.smooth = function (smooth = 1) {
       this._smooth = smooth;
       return this;
@@ -3467,14 +3471,21 @@ var _default = {
       return this;
     };
 
+    Array.prototype.e = Array.prototype.ease;
+
+    Array.prototype.sine = function () {
+      return this.ease('sin');
+    };
+
     Array.prototype.offset = function (offset = 0.5) {
       this._offset = offset % 1.0;
       return this;
-    }; // Array.prototype.bounce = function() {
+    };
+
+    Array.prototype.off = Array.prototype.offset; // Array.prototype.bounce = function() {
     //   this.modifiers.bounce = true
     //   return this
     // }
-
 
     Array.prototype.fit = function (low = 0, high = 1) {
       let lowest = Math.min(...this);

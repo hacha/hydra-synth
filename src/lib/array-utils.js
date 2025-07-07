@@ -15,6 +15,8 @@ export default {
       this._speed = speed
       return this
     }
+    
+    Array.prototype.f = Array.prototype.fast
 
     Array.prototype.smooth = function(smooth = 1) {
       this._smooth = smooth
@@ -32,11 +34,19 @@ export default {
       }
       return this
     }
+    
+    Array.prototype.e = Array.prototype.ease
+    
+    Array.prototype.sine = function() {
+      return this.ease('sin')
+    }
 
     Array.prototype.offset = function(offset = 0.5) {
       this._offset = offset%1.0
       return this
     }
+    
+    Array.prototype.off = Array.prototype.offset
 
     // Array.prototype.bounce = function() {
     //   this.modifiers.bounce = true
