@@ -43,6 +43,7 @@ function init() {
     .add(shape(4,.1).scrY(-.0).scrX([-.2,.2].eQuart()))
     .add(shape(4,.1).scrY(-.2).scrX([-.2,.2].eiCubic()))
     .add(shape(4,.1).scrY(-.4).scrX([-.2,.2].lin()))
+    .mirror()
     .out()
 
     // console.log(hydra)

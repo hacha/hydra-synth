@@ -2265,6 +2265,19 @@ var _default = () => [{
    _st.y += scrollY + time*speedY;
    return fract(_st);`
 }, {
+  name: 'mirror',
+  type: 'coord',
+  inputs: [{
+    type: 'float',
+    name: 'axis',
+    default: 0.5
+  }],
+  glsl: `   vec2 st = _st;
+   if(st.x > axis) {
+     st.x = axis - (st.x - axis);
+   }
+   return st;`
+}, {
   name: 'scrollX',
   type: 'coord',
   inputs: [{
