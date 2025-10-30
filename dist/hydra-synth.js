@@ -3000,6 +3000,7 @@ class HydraRenderer {
         fps: 0
       },
       speed: 1,
+      PI: Math.PI,
       mouse: Mouse,
       render: this._render.bind(this),
       setResolution: this.setResolution.bind(this),
