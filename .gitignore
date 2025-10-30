@@ -65,3 +65,4 @@ typings/
 
 # jetbrains config
 .idea
+.serena
