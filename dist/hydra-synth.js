@@ -4469,10 +4469,10 @@ Output.prototype.render = function (passes) {
   var self = this;
   var uniforms = Object.assign(pass.uniforms, {
     prevBuffer: () => {
-      //var index = this.pingPongIndex ? 0 : 1
-      //   var index = self.pingPong[(passIndex+1)%2]
+      var index = self.pingPongIndex ? 0 : 1; //   var index = self.pingPong[(passIndex+1)%2]
       //  console.log('ping pong', self.pingPongIndex)
-      return self.fbos[self.pingPongIndex];
+
+      return self.fbos[index];
     }
   });
   self.draw = self.regl({
