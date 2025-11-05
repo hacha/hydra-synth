@@ -66,6 +66,12 @@ class GeneratorFactory {
       } else if (method === 'noise') {
         this.generators.noi = this.generators.noise
         this.changeListener({ type: 'add', synth: this, method: 'noi' })
+      } else if (method === 'shape') {
+        this.generators.sha = this.generators.shape
+        this.changeListener({ type: 'add', synth: this, method: 'sha' })
+      } else if (method === 'solid') {
+        this.generators.sol = this.generators.solid
+        this.changeListener({ type: 'add', synth: this, method: 'sol' })
       }
       
       return func
@@ -138,6 +144,12 @@ class GeneratorFactory {
         this.sourceClass.prototype.mul = this.sourceClass.prototype.mult
       } else if (method === 'colorama') {
         this.sourceClass.prototype.colama = this.sourceClass.prototype.colorama
+      } else if (method === 'luma') {
+        this.sourceClass.prototype.lu = this.sourceClass.prototype.luma
+      } else if (method === 'layer') {
+        this.sourceClass.prototype.lay = this.sourceClass.prototype.layer
+      } else if (method === 'blend') {
+        this.sourceClass.prototype.ble = this.sourceClass.prototype.blend
       }
     }
     return undefined

@@ -45,6 +45,8 @@ All of the following shorthand aliases are available in addition to the original
 | `gradient()` | `grad()` |
 | `voronoi()` | `vor()` |
 | `noise()` | `noi()` |
+| `shape()` | `sha()` |
+| `solid()` | `sol()` |
 
 #### Modulate Functions
 All `modulateXXX()` functions have `modXXX` aliases. Additionally, some have even shorter aliases:
@@ -74,6 +76,7 @@ All `modulateXXX()` functions have `modXXX` aliases. Additionally, some have eve
 | `color()` | `col()` |
 | `invert()` | `inv()` |
 | `colorama()` | `colama()` |
+| `luma()` | `lu()` |
 
 #### Coordinate Transform Functions
 | Original | Alias |
@@ -92,6 +95,8 @@ All `modulateXXX()` functions have `modXXX` aliases. Additionally, some have eve
 | Original | Alias |
 |----------|-------|
 | `mult()` | `mul()` |
+| `layer()` | `lay()` |
+| `blend()` | `ble()` |
 
 #### Array Method Aliases
 
