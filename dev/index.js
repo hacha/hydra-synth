@@ -39,13 +39,13 @@ function init() {
     // .out()
 
     solid()
-    .add(shape(4,.1).scrY(.2).scrX([-.2,.2].eoQuint()))
-    .add(shape(4,.1).scrY(-.0).scrX([-.2,.2].eQuart()))
-    .add(shape(4,.1).scrY(-.2).scrX([-.2,.2].eiCubic()))
-    .add(shape(4,.1).scrY(-.4).scrX([-.2,.2].lin()))
-    .rot(PI/6)
-    .mirror()
-    .out()
+        .add(shape(4, .1).scrY(.2).scrX([-.2, .2].eoQuint()))
+        .add(shape(4, .1).scrY(-.0).scrX([-.2, .2].eQuart()))
+        .add(shape(4, .1).scrY(-.2).scrX([-.2, .2].eiCubic()))
+        .add(shape(4, .1).scrY(-.4).scrX([-.2, .2].lin(.5)))
+        .rot(PI / 6)
+        .mirror()
+        .out()
 
     // console.log(hydra)
     // window.hydra = hydra
