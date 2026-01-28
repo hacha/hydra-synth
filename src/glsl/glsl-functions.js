@@ -88,6 +88,25 @@ export default () => [
       `   return vec4(vec3(_noise(vec3(_st*scale, offset*time))), 1.0);`
   },
   {
+    name: 'noise1',
+    type: 'src',
+    inputs: [
+      {
+        type: 'float',
+        name: 'scale',
+        default: 1,
+      },
+      {
+        type: 'float',
+        name: 'offset',
+        default: 0,
+      }
+    ],
+    glsl:
+      `   // Output range: -1 to +1 (same as noise() for consistency)
+   return vec4(vec3(_noise1d(time * scale + offset)), 1.0);`
+  },
+  {
     name: 'voronoi',
     type: 'src',
     inputs: [

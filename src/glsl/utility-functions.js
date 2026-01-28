@@ -107,5 +107,28 @@ export default {
         vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
         return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
     }`
+  },
+  _noise1d: {
+    type: 'util',
+    glsl: `
+float _hash1d(float n) {
+  return fract(sin(n * 127.1) * 43758.5453123);
+}
+
+float _noise1d(float x) {
+  float i = floor(x);
+  float f = fract(x);
+
+  // Quintic Hermite curve (C2 continuous)
+  float u = f * f * f * (f * (f * 6.0 - 15.0) + 10.0);
+
+  // Gradient values at integer points
+  float a = _hash1d(i) * 2.0 - 1.0;
+  float b = _hash1d(i + 1.0) * 2.0 - 1.0;
+
+  // Gradient noise interpolation, scaled to match _noise() output range (-1 to +1)
+  return mix(a * f, b * (f - 1.0), u) * 2.0;
+}
+`
   }
 }

@@ -66,6 +66,9 @@ class GeneratorFactory {
       } else if (method === 'noise') {
         this.generators.noi = this.generators.noise
         this.changeListener({ type: 'add', synth: this, method: 'noi' })
+      } else if (method === 'noise1') {
+        this.generators.noi1 = this.generators.noise1
+        this.changeListener({ type: 'add', synth: this, method: 'noi1' })
       } else if (method === 'shape') {
         this.generators.sha = this.generators.shape
         this.changeListener({ type: 'add', synth: this, method: 'sha' })
