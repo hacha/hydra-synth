@@ -35,6 +35,28 @@ osc().rotate(Math.PI / 4).out()
 osc().rotate(PI / 4).out()
 ```
 
+#### `noise1()` Function
+Added `noise1()` source function that generates 1D noise varying only with time. This provides a uniform value across the entire screen that changes over time - useful as a lightweight alternative to the `noise().pix(1,1)` workaround.
+
+**Parameters:**
+- `scale` (default: 1): Speed of time variation
+- `offset` (default: 0): Initial phase offset (useful when using multiple noise1 calls)
+
+**Example:**
+```javascript
+// Basic usage - uniform value that changes over time
+noise1().out()
+
+// Modulate with time-varying noise
+osc().modulate(noise1(), 0.1).out()
+
+// Using alias
+noi1(2).out()
+
+// Multiple independent noise values with different offsets
+solid(noise1(1, 0), noise1(1, 100), noise1(1, 200)).out()
+```
+
 ### Shorthand Function Aliases
 
 All of the following shorthand aliases are available in addition to the original function names. These aliases are particularly useful for live coding where brevity is important.
@@ -45,6 +67,7 @@ All of the following shorthand aliases are available in addition to the original
 | `gradient()` | `grad()` |
 | `voronoi()` | `vor()` |
 | `noise()` | `noi()` |
+| `noise1()` | `noi1()` |
 | `shape()` | `sha()` |
 | `solid()` | `sol()` |
 
@@ -138,6 +161,8 @@ Shorthand methods for applying easing functions to arrays:
 | `eoQuint()` | `ease('easeOutQuint')` |
 | `eQuint()` | `ease('easeInOutQuint')` |
 
+All easing shortcuts accept an optional `speed` argument for more concise syntax:
+
 **Example:**
 ```javascript
 // Using easing shorthand
@@ -145,6 +170,12 @@ osc([10, 20, 30, 40].eiCubic()).out()
 
 // Equivalent to
 osc([10, 20, 30, 40].ease('easeInCubic')).out()
+
+// With speed argument (new)
+osc([0, 1].eCubic(2)).out()
+
+// Equivalent to
+osc([0, 1].ease('easeInOutCubic').fast(2)).out()
 ```
 
 ### Example Usage
