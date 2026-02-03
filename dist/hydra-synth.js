@@ -3611,6 +3611,13 @@ var _default = {
       return this.ease('easeInOutQuint', speed);
     };
 
+    Array.prototype.saw = function () {
+      this._saw = true;
+      return this;
+    };
+
+    Array.prototype.s = Array.prototype.saw;
+
     Array.prototype.offset = function (offset = 0.5) {
       this._offset = offset % 1.0;
       return this;
@@ -3628,6 +3635,7 @@ var _default = {
       newArr._speed = this._speed;
       newArr._smooth = this._smooth;
       newArr._ease = this._ease;
+      newArr._saw = this._saw;
       return newArr;
     };
   },
@@ -3644,8 +3652,16 @@ var _default = {
 
       let _index = index - smooth / 2;
 
-      let currValue = arr[Math.floor(_index % arr.length)];
-      let nextValue = arr[Math.floor((_index + 1) % arr.length)];
+      let currIndex = Math.floor(_index % arr.length);
+      let nextIndex = Math.floor((_index + 1) % arr.length);
+      let currValue = arr[currIndex];
+      let nextValue = arr[nextIndex]; // saw mode: treat last-to-first transition as next cycle's first-to-second
+
+      if (arr._saw && currIndex === arr.length - 1 && nextIndex === 0) {
+        currValue = arr[0];
+        nextValue = arr[1 % arr.length];
+      }
+
       let t = Math.min(_index % 1 / smooth, 1);
       return ease(t) * (nextValue - currValue) + currValue;
     } else {
