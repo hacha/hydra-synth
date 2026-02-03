@@ -57,6 +57,36 @@ noi1(2).out()
 solid(noise1(1, 0), noise1(1, 100), noise1(1, 200)).out()
 ```
 
+#### `aspect()` Function
+Added `aspect()` (alias: `asp()`) coordinate transformation that scales the Y coordinate based on window aspect ratio. This is useful for maintaining correct proportions when the window is resized.
+
+**Parameters:**
+- `ratio` (default: dynamic `window.innerHeight / window.innerWidth`): The aspect ratio to apply
+
+**Example:**
+```javascript
+// Maintain circle shape regardless of window size
+shape(100).aspect().out()
+
+// Custom aspect ratio
+osc().aspect(0.5).out()
+```
+
+#### `saw()` Array Method
+Added `saw()` (alias: `s()`) for sawtooth-style array interpolation. Unlike normal interpolation which smoothly transitions from the last element back to the first, `saw()` skips that transition - the value jumps immediately to the first element and continues interpolating from there.
+
+**Example:**
+```javascript
+// Normal interpolation: 0 → 1 → 0 → 1 → ...
+osc([0, 1]).out()
+
+// Sawtooth: 0 → 1, jump to 0 → 1, jump to 0 → ...
+osc([0, 1].saw()).out()
+
+// Using alias
+osc([0, 1].s()).out()
+```
+
 ### Shorthand Function Aliases
 
 All of the following shorthand aliases are available in addition to the original function names. These aliases are particularly useful for live coding where brevity is important.
@@ -113,6 +143,7 @@ All `modulateXXX()` functions have `modXXX` aliases. Additionally, some have eve
 | `scrollY()` | `scrY()` |
 | `rotate()` | `rot()` |
 | `scale()` | `sca()` |
+| `aspect()` | `asp()` |
 
 #### Combine Functions
 | Original | Alias |
@@ -130,6 +161,7 @@ Hydra uses arrays for sequencing values over time. These methods have shorter al
 | `fast()` | `f()` |
 | `ease()` | `e()` |
 | `offset()` | `off()` |
+| `saw()` | `s()` |
 
 **Example:**
 ```javascript
