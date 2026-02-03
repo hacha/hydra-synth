@@ -45,7 +45,7 @@ export default function formatArguments(transform, startIndex, synthContext) {
       //  generateGlsl: null // function for creating glsl
     }
 
-    if (typedArg.type === 'float') typedArg.value = ensure_decimal_dot(input.default)
+    if (typedArg.type === 'float' && typeof input.default !== 'function') typedArg.value = ensure_decimal_dot(input.default)
     if (input.type.startsWith('vec')) {
       try {
         typedArg.vecLen = Number.parseInt(input.type.substr(3))
@@ -92,7 +92,24 @@ export default function formatArguments(transform, startIndex, synthContext) {
        typedArg.value = (context, props, batchId) => arrayUtils.getValue(userArgs[index])(props)
        typedArg.isUniform = true
         // }
-      } 
+      }
+    } else if (typeof input.default === 'function') {
+      // handle function as default value (no user arg provided)
+      typedArg.value = (context, props, batchId) => {
+        try {
+          const val = input.default(props)
+          if(typeof val === 'number') {
+            return val
+          } else {
+            console.warn('function does not return a number', input.default)
+          }
+          return 0
+        } catch (e) {
+          console.warn('ERROR', e)
+          return 0
+        }
+      }
+      typedArg.isUniform = true
     }
 
     if (startIndex < 0) {

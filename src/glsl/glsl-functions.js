@@ -324,6 +324,23 @@ export default () => [
    `
   },
   {
+    name: 'aspect',
+    type: 'coord',
+    inputs: [
+      {
+        type: 'float',
+        name: 'ratio',
+        default: () => window.innerHeight / window.innerWidth,
+      }
+    ],
+    glsl:
+      `   vec2 xy = _st - vec2(0.5);
+   xy.y *= ratio;
+   xy += vec2(0.5);
+   return xy;
+   `
+  },
+  {
     name: 'pixelate',
     type: 'coord',
     inputs: [
