@@ -143,6 +143,8 @@ class GeneratorFactory {
         this.sourceClass.prototype.inv = this.sourceClass.prototype.invert
       } else if (method === 'scale') {
         this.sourceClass.prototype.sca = this.sourceClass.prototype.scale
+      } else if (method === 'aspect') {
+        this.sourceClass.prototype.asp = this.sourceClass.prototype.aspect
       } else if (method === 'mult') {
         this.sourceClass.prototype.mul = this.sourceClass.prototype.mult
       } else if (method === 'colorama') {
