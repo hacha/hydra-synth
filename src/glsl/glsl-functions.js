@@ -230,11 +230,15 @@ export default () => [
         type: 'sampler2D',
         name: 'tex',
         default: NaN,
+      },
+      {
+        type: 'float',
+        name: 'wrap',
+        default: 1,
       }
     ],
     glsl:
-      `   //  vec2 uv = gl_FragCoord.xy/vec2(1280., 720.);
-   return texture2D(tex, fract(_st));`
+      `   return texture2D(tex, mix(_st, fract(_st), wrap));`
   },
   {
     name: 'solid',

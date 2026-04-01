@@ -72,6 +72,24 @@ shape(100).aspect().out()
 osc().aspect(0.5).out()
 ```
 
+#### `src()` Wrap Option
+Added a `wrap` parameter to `src()` to control whether the source texture repeats (tiles) when coordinates go outside the `[0,1]` range. By default, `src()` repeats the texture (existing behavior). Set `wrap` to `0` to clamp instead, which is useful when applying coordinate transforms like `scale()` to a source buffer.
+
+**Parameters:**
+- `tex`: Source texture (output buffer or source)
+- `wrap` (default: 1): Set to `1` for repeat (default), `0` for clamp (no repeat)
+
+**Example:**
+```javascript
+// Default: texture repeats when scaled down
+sha(3).out(o1)
+src(o1).sca(.5).out(o0) // repeats around the edges
+
+// With wrap=0: no repeat, edges are clamped
+sha(3).out(o1)
+src(o1, 0).sca(.5).out(o0) // no repeat
+```
+
 #### `saw()` Array Method
 Added `saw()` (alias: `s()`) for sawtooth-style array interpolation. Unlike normal interpolation which smoothly transitions from the last element back to the first, `saw()` skips that transition - the value jumps immediately to the first element and continues interpolating from there.
 

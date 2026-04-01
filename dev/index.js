@@ -40,12 +40,15 @@ function init() {
 
     solid()
         .add(shape(4, .1).scrY(.2).scrX([-.2, .2].eoQuint()))
-        .add(shape(4, .1).scrY(-.0).scrX([-.2, .2].eQuart()))
+        .add(shape(9999, .1).scrY(-.0).scrX([-.2, .2].eQuart()))
         .add(shape(4, .1).scrY(-.2).scrX([-.2, .2].eiCubic()))
-        .add(shape(4, .1).scrY(-.4).scrX([-.2, .2].lin(.5)))
+        .add(shape(4, .1).scrY(-.4).scrX([-.2, .2].lin(2).s()))
         .rot(PI / 6)
         .mirror()
+        .asp()
+        .diff(src(o0, 0).sca(.5).bri(-.1))
         .out()
+
 
     // console.log(hydra)
     // window.hydra = hydra

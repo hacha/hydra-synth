@@ -20,7 +20,8 @@ var Output = function ({ regl, precision, label = "", width, height}) {
       mag: 'nearest',
       width: width,
       height: height,
-      format: 'rgba'
+      format: 'rgba',
+      wrap: 'clamp'
     }),
     depthStencil: false
   }))
