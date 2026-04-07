@@ -9,6 +9,7 @@ import ArrayUtils from './lib/array-utils.js'
 // import strudel from './lib/strudel.js'
 import Sandbox from './eval-sandbox.js'
 import Generator from './generator-factory.js'
+import TextSource from './text-source.js'
 import regl from 'regl'
 // const window = global.window
 
@@ -103,6 +104,7 @@ class HydraRenderer {
     this._initOutputs(numOutputs)
     this._initSources(numSources)
     this._generateGlslTransforms()
+    this._initTextGenerator()
 
     this.synth.screencap = () => {
       this.saveFrame = true
@@ -408,6 +410,30 @@ class HydraRenderer {
       }
     })
     this.synth.setFunction = this.generator.setFunction.bind(this.generator)
+  }
+
+  _initTextGenerator () {
+    var self = this
+    var srcTransform = this.generator.glslTransforms['src']
+
+    var textFunc = function (str, fontSize, opts) {
+      if (str === undefined) str = ''
+      if (typeof fontSize === 'object') { opts = fontSize; fontSize = undefined }
+      if (opts === undefined) opts = {}
+      if (fontSize !== undefined) opts.fontSize = fontSize
+      var textSource = new TextSource(self.regl, self.width, self.height, str, opts)
+      return new self.generator.sourceClass({
+        name: 'src',
+        transform: srcTransform,
+        userArgs: [textSource],
+        defaultOutput: self.generator.defaultOutput,
+        defaultUniforms: self.generator.defaultUniforms,
+        synth: self.generator
+      })
+    }
+
+    this.synth.text = textFunc
+    if (this.sandbox) this.sandbox.add('text')
   }
 
   _render (output) {
