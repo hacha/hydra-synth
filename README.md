@@ -72,6 +72,38 @@ shape(100).aspect().out()
 osc().aspect(0.5).out()
 ```
 
+#### `text()` Function
+Added `text()` for rendering text as a source, without consuming HydraSource slots (s0-s3). Text is rendered to an internal Canvas2D and used as a texture. Supports dynamic text via function arguments, multiline (`\n`), and customizable font/color/size.
+
+**Parameters:**
+- `str` (default: `''`): Text string to render, or a function that returns a string (for dynamic updates)
+- `fontSize` (optional): Font size in pixels (default: canvas height / 8)
+- `opts` (optional): Object with additional options:
+  - `font`: CSS font string (default: `'<fontSize>px system-ui'`)
+  - `color`: Text color (default: `'white'`)
+  - `bg`: Background color (default: `'black'`)
+  - `align`: Text alignment (default: `'center'`)
+  - `baseline`: Text baseline (default: `'middle'`)
+  - `lineHeight`: Line height in pixels (default: `fontSize * 1.2`)
+
+**Example:**
+```javascript
+// Basic text
+text('hello').out()
+
+// Custom font size
+text('hydra', 80).out()
+
+// Dynamic text (re-evaluated each frame)
+text(() => new Date().toLocaleTimeString()).out()
+
+// Multiline with options
+text('line1\nline2', { color: 'cyan', bg: 'transparent' }).out()
+
+// Use as a source in transform chains
+text('wow').rot(0.1).color(1, 0, 0).out()
+```
+
 #### `src()` Wrap Option
 Added a `wrap` parameter to `src()` to control whether the source texture repeats (tiles) when coordinates go outside the `[0,1]` range. By default, `src()` repeats the texture (existing behavior). Set `wrap` to `0` to clamp instead, which is useful when applying coordinate transforms like `scale()` to a source buffer.
 
