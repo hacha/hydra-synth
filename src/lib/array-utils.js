@@ -103,6 +103,14 @@ export default {
 
     Array.prototype.s = Array.prototype.saw
 
+    Array.prototype.hold = function(hold = 0.5) {
+      this._hold = hold
+      if (!this._smooth) this._smooth = 1
+      return this
+    }
+
+    Array.prototype.h = Array.prototype.hold
+
     Array.prototype.offset = function(offset = 0.5) {
       this._offset = offset%1.0
       return this
@@ -123,6 +131,7 @@ export default {
       newArr._smooth = this._smooth
       newArr._ease = this._ease
       newArr._saw = this._saw
+      newArr._hold = this._hold
       return newArr
     }
   },
@@ -130,6 +139,7 @@ export default {
   getValue: function getValue(arr = [], parentCycle) { return ({time, bpm}) =>{
     let speed = arr._speed ? arr._speed : 1
     let smooth = arr._smooth ? arr._smooth : 0
+    let hold = arr._hold ? arr._hold : 0
     let index = parentCycle !== undefined
       ? parentCycle * speed + (arr._offset || 0)
       : time * speed * (bpm / 60) + (arr._offset || 0)
@@ -138,7 +148,8 @@ export default {
 
     if (smooth!==0) {
       let ease = arr._ease ? arr._ease : easing['linear']
-      let _index = index - (smooth / 2)
+      // when hold > 0, anchor each step at the integer boundary (no centering shift)
+      let _index = hold > 0 ? index : index - (smooth / 2)
       let cycle = Math.floor(Math.max(0, _index) / arr.length)
       let currIndex = Math.floor(_index % arr.length)
       let nextIndex = Math.floor((_index + 1) % arr.length)
@@ -151,7 +162,11 @@ export default {
         nextValue = resolve(arr[1 % arr.length], cycle)
       }
 
-      let t = Math.min((_index%1)/smooth,1)
+      let frac = _index % 1
+      // available interp window = (1 - hold) * smooth, so t reaches 1 at step end when smooth=1
+      let t = frac < hold
+        ? 0
+        : Math.min((frac - hold) / (smooth * (1 - hold)), 1)
       return ease(t) * (nextValue - currValue) + currValue
     }
     else {

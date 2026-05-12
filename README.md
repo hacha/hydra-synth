@@ -137,6 +137,26 @@ osc([0, 1].saw()).out()
 osc([0, 1].s()).out()
 ```
 
+#### `hold()` Array Method
+Added `hold()` (alias: `h()`) for holding each array element before transitioning to the next. `hold(t)` keeps the current value for the first `t` fraction (0–1) of each step, then interpolates to the next value during the remaining time. Useful for replacing repetitive value patterns like `[0, 0, 1, 1, 2, 2]` with concise `[0, 1, 2].lin().hold(.5)`.
+
+**Example:**
+```javascript
+// Hold each value for half the step, then interpolate
+osc([0, 1, 2].lin(1).hold(.5)).out()
+
+// Equivalent (roughly) to repeating each value
+osc([0, 0, 1, 1, 2, 2].lin(2)).out()
+
+// Using alias
+osc([0, 1, 2].lin(1).h(.5)).out()
+
+// Works with any easing
+osc([10, 50].sin(1).hold(.3)).out()
+```
+
+When `hold > 0`, the step is anchored at integer boundaries (no centering shift), so the held value occupies the beginning of each step.
+
 #### `kaleid()` / `modulateKaleid()` Smoothness Parameter
 Added a `smoothness` parameter (default: `0`) to `kaleid()` and `modulateKaleid()`. When `0`, behavior matches the original (hard mirror seams). Larger values smooth the polar fold so that the kaleidoscope seams become rounded rather than creased.
 
@@ -225,6 +245,7 @@ Hydra uses arrays for sequencing values over time. These methods have shorter al
 | `ease()` | `e()` |
 | `offset()` | `off()` |
 | `saw()` | `s()` |
+| `hold()` | `h()` |
 
 **Example:**
 ```javascript
