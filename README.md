@@ -138,15 +138,15 @@ osc([0, 1].s()).out()
 ```
 
 #### `hold()` Array Method
-Added `hold()` (alias: `h()`) for holding each array element before transitioning to the next. `hold(t)` keeps the current value for the first `t` fraction (0–1) of each step, then interpolates to the next value during the remaining time. Useful for replacing repetitive value patterns like `[0, 0, 1, 1, 2, 2]` with concise `[0, 1, 2].lin().hold(.5)`.
+Added `hold()` (alias: `h()`) for holding each array element before transitioning to the next. `hold(h)` extends each step by `h` (in step units): each value is held for `h` and then interpolated to the next over `1`. So `hold(.5)` makes each value last 1.5 steps (0.5 held + 1 transitioning), and `hold(1)` doubles each step (1 held + 1 transitioning). Useful for replacing repetitive value patterns like `[0, 0, 1, 1, 2, 2]` with concise `[0, 1, 2].lin().hold(.5)`.
 
 **Example:**
 ```javascript
-// Hold each value for half the step, then interpolate
+// Hold each value briefly, then interpolate
 osc([0, 1, 2].lin(1).hold(.5)).out()
 
-// Equivalent (roughly) to repeating each value
-osc([0, 0, 1, 1, 2, 2].lin(2)).out()
+// hold(1): held for one step, then transitions over the next step (no jumps)
+osc([0, 1].lin(1).hold(1)).out()
 
 // Using alias
 osc([0, 1, 2].lin(1).h(.5)).out()
@@ -155,7 +155,7 @@ osc([0, 1, 2].lin(1).h(.5)).out()
 osc([10, 50].sin(1).hold(.3)).out()
 ```
 
-When `hold > 0`, the step is anchored at integer boundaries (no centering shift), so the held value occupies the beginning of each step.
+When `hold > 0`, the step is anchored at integer boundaries (no centering shift), so the held value occupies the beginning of each (stretched) step and the transition reaches the target exactly at the step end — eliminating jumps even at large hold values.
 
 #### `kaleid()` / `modulateKaleid()` Smoothness Parameter
 Added a `smoothness` parameter (default: `0`) to `kaleid()` and `modulateKaleid()`. When `0`, behavior matches the original (hard mirror seams). Larger values smooth the polar fold so that the kaleidoscope seams become rounded rather than creased.

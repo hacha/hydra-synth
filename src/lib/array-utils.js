@@ -148,8 +148,11 @@ export default {
 
     if (smooth!==0) {
       let ease = arr._ease ? arr._ease : easing['linear']
-      // when hold > 0, anchor each step at the integer boundary (no centering shift)
-      let _index = hold > 0 ? index : index - (smooth / 2)
+      // hold extends each step: total step duration = (1 + hold), with `hold` held then 1 transitioning
+      let totalStep = 1 + hold
+      let holdRatio = hold / totalStep
+      // when hold > 0, anchor each (stretched) step at the integer boundary (no centering shift)
+      let _index = hold > 0 ? index / totalStep : index - (smooth / 2)
       let cycle = Math.floor(Math.max(0, _index) / arr.length)
       let currIndex = Math.floor(_index % arr.length)
       let nextIndex = Math.floor((_index + 1) % arr.length)
@@ -163,10 +166,10 @@ export default {
       }
 
       let frac = _index % 1
-      // available interp window = (1 - hold) * smooth, so t reaches 1 at step end when smooth=1
-      let t = frac < hold
+      // transition window within the stretched step = smooth * (1 - holdRatio)
+      let t = frac < holdRatio
         ? 0
-        : Math.min((frac - hold) / (smooth * (1 - hold)), 1)
+        : Math.min((frac - holdRatio) / (smooth * (1 - holdRatio)), 1)
       return ease(t) * (nextValue - currValue) + currValue
     }
     else {
