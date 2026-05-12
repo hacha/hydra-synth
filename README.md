@@ -137,6 +137,19 @@ osc([0, 1].saw()).out()
 osc([0, 1].s()).out()
 ```
 
+#### `kaleid()` / `modulateKaleid()` Smoothness Parameter
+Added a `smoothness` parameter (default: `0`) to `kaleid()` and `modulateKaleid()`. When `0`, behavior matches the original (hard mirror seams). Larger values smooth the polar fold so that the kaleidoscope seams become rounded rather than creased.
+
+**Parameters:**
+- `nSides` (default: 4): Number of mirrored slices
+- `smoothness` (default: 0): Smoothing amount applied to the fold. Useful range is roughly `0`–`2`; higher values flatten the kaleidoscope toward a single direction. Based on gaz's polar smooth fold (`asin(sin(θ·n)/(k+1))/n`).
+
+**Example:**
+```javascript
+osc(20, 0.1, 1).kaleid(6, 0.5).out()
+osc(20, 0.1, 1).modulateKaleid(noise(3), 6, 0.5).out()
+```
+
 ### Shorthand Function Aliases
 
 All of the following shorthand aliases are available in addition to the original function names. These aliases are particularly useful for live coding where brevity is important.

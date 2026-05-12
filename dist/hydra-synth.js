@@ -2295,14 +2295,17 @@ var _default = () => [{
     type: 'float',
     name: 'nSides',
     default: 4
+  }, {
+    type: 'float',
+    name: 'smoothness',
+    default: 0
   }],
   glsl: `   vec2 st = _st;
    st -= 0.5;
    float r = length(st);
-   float a = atan(st.y, st.x);
    float pi = 2.*3.1416;
-   a = mod(a,pi/nSides);
-   a = abs(a-pi/nSides/2.);
+   float a = atan(st.y, st.x) + pi/(2.*nSides);
+   a = abs(asin(sin(a*nSides*0.5)/(smoothness+1.0))) * 2.0/nSides;
    return r*vec2(cos(a), sin(a));`
 }, {
   name: 'modulateKaleid',
@@ -2311,13 +2314,16 @@ var _default = () => [{
     type: 'float',
     name: 'nSides',
     default: 4
+  }, {
+    type: 'float',
+    name: 'smoothness',
+    default: 0
   }],
   glsl: `   vec2 st = _st - 0.5;
    float r = length(st);
-   float a = atan(st.y, st.x);
    float pi = 2.*3.1416;
-   a = mod(a,pi/nSides);
-   a = abs(a-pi/nSides/2.);
+   float a = atan(st.y, st.x) + pi/(2.*nSides);
+   a = abs(asin(sin(a*nSides*0.5)/(smoothness+1.0))) * 2.0/nSides;
    return (_c0.r+r)*vec2(cos(a), sin(a));`
 }, {
   name: 'scroll',
