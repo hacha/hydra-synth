@@ -2559,6 +2559,15 @@ var _default = () => [{
   }],
   glsl: `   return vec4(_c0.rgb + vec3(amount), _c0.a);`
 }, {
+  name: 'gamma',
+  type: 'color',
+  inputs: [{
+    type: 'float',
+    name: 'amount',
+    default: 0.5
+  }],
+  glsl: `   return vec4(pow(max(_c0.rgb, vec3(0.0)), vec3(amount)), _c0.a);`
+}, {
   name: 'mask',
   type: 'combine',
   inputs: [],
@@ -3695,6 +3704,14 @@ var _default = {
 
     Array.prototype.s = Array.prototype.saw;
 
+    Array.prototype.hold = function (hold = 0.5) {
+      this._hold = hold;
+      if (!this._smooth) this._smooth = 1;
+      return this;
+    };
+
+    Array.prototype.h = Array.prototype.hold;
+
     Array.prototype.offset = function (offset = 0.5) {
       this._offset = offset % 1.0;
       return this;
@@ -3713,6 +3730,7 @@ var _default = {
       newArr._smooth = this._smooth;
       newArr._ease = this._ease;
       newArr._saw = this._saw;
+      newArr._hold = this._hold;
       return newArr;
     };
   },
@@ -3723,6 +3741,7 @@ var _default = {
     }) => {
       let speed = arr._speed ? arr._speed : 1;
       let smooth = arr._smooth ? arr._smooth : 0;
+      let hold = arr._hold ? arr._hold : 0;
       let index = parentCycle !== undefined ? parentCycle * speed + (arr._offset || 0) : time * speed * (bpm / 60) + (arr._offset || 0);
 
       const resolve = (val, cycle) => Array.isArray(val) ? getValue(val, cycle)({
@@ -3731,9 +3750,12 @@ var _default = {
       }) : val;
 
       if (smooth !== 0) {
-        let ease = arr._ease ? arr._ease : _easingFunctions.default['linear'];
+        let ease = arr._ease ? arr._ease : _easingFunctions.default['linear']; // hold extends each step: total step duration = (1 + hold), with `hold` held then 1 transitioning
 
-        let _index = index - smooth / 2;
+        let totalStep = 1 + hold;
+        let holdRatio = hold / totalStep; // when hold > 0, anchor each (stretched) step at the integer boundary (no centering shift)
+
+        let _index = hold > 0 ? index / totalStep : index - smooth / 2;
 
         let cycle = Math.floor(Math.max(0, _index) / arr.length);
         let currIndex = Math.floor(_index % arr.length);
@@ -3746,7 +3768,9 @@ var _default = {
           nextValue = resolve(arr[1 % arr.length], cycle);
         }
 
-        let t = Math.min(_index % 1 / smooth, 1);
+        let frac = _index % 1; // transition window within the stretched step = smooth * (1 - holdRatio)
+
+        let t = frac < holdRatio ? 0 : Math.min((frac - holdRatio) / (smooth * (1 - holdRatio)), 1);
         return ease(t) * (nextValue - currValue) + currValue;
       } else {
         let cycle = Math.floor(index / arr.length);

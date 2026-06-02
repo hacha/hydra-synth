@@ -936,6 +936,19 @@ export default () => [
       `   return vec4(_c0.rgb + vec3(amount), _c0.a);`
   },
   {
+    name: 'gamma',
+    type: 'color',
+    inputs: [
+      {
+        type: 'float',
+        name: 'amount',
+        default: 0.5,
+      }
+    ],
+    glsl:
+      `   return vec4(pow(max(_c0.rgb, vec3(0.0)), vec3(amount)), _c0.a);`
+  },
+  {
     name: 'mask',
     type: 'combine',
     inputs: [

@@ -170,6 +170,19 @@ osc(20, 0.1, 1).kaleid(6, 0.5).out()
 osc(20, 0.1, 1).modulateKaleid(noise(3), 6, 0.5).out()
 ```
 
+#### `gamma()` Function
+Added `gamma()` for gamma correction. Applies `pow(color, amount)` per channel, lifting shadows and midtones while keeping pure black and white unchanged — unlike `brightness()`, which adds a flat offset and can blow out highlights. This makes it well suited to brightening dark camera input (e.g. low-light club footage) so detail becomes visible without clipping bright lights.
+
+**Parameters:**
+- `amount` (default: 0.5): Gamma exponent. `1.0` is no change; values below `1.0` brighten (lower = stronger lift, e.g. `0.3`); values above `1.0` darken. Negative inputs are clamped to `0` to avoid `NaN`.
+
+**Example:**
+```javascript
+// Brighten dark webcam input while preserving bright lights
+s0.initCam()
+src(s0).gamma(0.4).out()
+```
+
 ### Shorthand Function Aliases
 
 All of the following shorthand aliases are available in addition to the original function names. These aliases are particularly useful for live coding where brevity is important.
