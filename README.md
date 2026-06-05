@@ -183,6 +183,54 @@ s0.initCam()
 src(s0).gamma(0.4).out()
 ```
 
+#### `toLog()` / `fromLog()` Log-Polar Space
+Added a pair of coordinate transforms that warp the image into **log-polar ("log") space** and back, so you can sandwich ordinary coordinate ops between them and have them act on the logarithm of the coordinate. `toLog()` interprets the coordinate (relative to a center) as a complex number and enters log space; `fromLog()` is its exact inverse. Because hydra applies coordinate transforms innermost-first, write them in the natural order `src().toLog().<ops>().fromLog()`.
+
+The point of log-polar space is a change of algebra: **multiplication becomes addition**. So a plain translation in log space turns into a scale/rotation in the original image:
+- A shift on **x** (e.g. `scrollX`) → **zoom** (radius scales by `e^shift`)
+- A shift on **y** (e.g. `scrollY`) → **rotation** (one full turn over a height of `1.0`)
+- A **`repeat`** → **self-similar (Droste) tiling** — concentric, infinitely-nested copies
+
+**Parameters (both functions):**
+- `centerX` (default: 0.5), `centerY` (default: 0.5): The origin of the log-polar mapping. **Must match between `toLog()` and `fromLog()`** for the round trip to cancel (the defaults already match).
+
+**Notes:**
+- Because hydra's `scroll`/`repeat` ops wrap with `fract()`, the zoom is a *self-similar tiling* zoom, not an unbounded clean zoom — which is what produces the nested, spiralling look.
+- The center is a singularity (`log(0) = -∞`), so expect noise at the exact center point.
+
+**Example:**
+```javascript
+// Continuous zoom-spiral: a slow horizontal scroll in log space
+osc(20, 0.1, 1).toLog().scrollX(0, 0.05).fromLog().out()
+
+// Droste tiling: repeating the log-radius axis nests the image into itself
+osc(30, 0.1, 1).toLog().repeatX(3).fromLog().out()
+
+// Rotation via a vertical scroll in log space
+noise(3).toLog().scrollY(0, 0.05).fromLog().out()
+```
+
+#### `spiral()` Log-Polar Shear
+Added `spiral()`, a coordinate shear meant to sit between `toLog()` and `fromLog()`. It shifts the log-radius in proportion to the angle, so straight features become **logarithmic spirals** and one full turn zooms the radius by `e^arms`.
+
+The point of the `arms` parameter is seamless meshing on round numbers: **integer `arms` align the spiral seam with the radial period (`×e`)**, so paired with `repeatX()` or a self-similar (feedback) source the spiral closes cleanly; non-integer values leave an open spiral seam. (The radial seam is fundamental for a non-self-similar source — `arms` controls where it lands and how many times it wraps, not whether it exists.)
+
+**Parameters:**
+- `arms` (default: 1): Number of radial periods per full turn. Integers mesh seamlessly; `0` is identity. Negative values wind the spiral the other way.
+
+**Example:**
+```javascript
+// Single-arm spiral
+osc(30, 0.1, 1).toLog().spiral(1).fromLog().out()
+
+// Three-arm spiral
+osc(30, 0.1, 1).toLog().spiral(3).fromLog().out()
+
+// To close the radial seam, give it a self-similar source — e.g. a feedback
+// loop, where each frame is a zoomed copy of the last (tune to taste):
+src(o0).scale(0.96).toLog().spiral(1).fromLog().blend(osc(30, 0.1, 1), 0.03).out(o0)
+```
+
 ### Shorthand Function Aliases
 
 All of the following shorthand aliases are available in addition to the original function names. These aliases are particularly useful for live coding where brevity is important.

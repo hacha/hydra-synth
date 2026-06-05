@@ -613,6 +613,83 @@ export default () => [
    return (_c0.r+r)*vec2(cos(a), sin(a));`
   },
   {
+    name: 'toLog',
+    type: 'coord',
+    inputs: [
+      {
+        type: 'float',
+        name: 'centerX',
+        default: 0.5,
+      },
+      {
+        type: 'float',
+        name: 'centerY',
+        default: 0.5,
+      }
+    ],
+    glsl:
+      `   // Enter log-polar ("log") space. Coord transforms are pullbacks
+   // (output pixel -> source coord), so pushing the image INTO log space
+   // means applying the inverse map (complex exp) to the coordinate here.
+   // Pair with fromLog() using the same center. Inside the pair: a shift on
+   // x (e.g. scrollX) becomes zoom, a shift on y (scrollY) becomes rotation,
+   // and a repeat becomes a self-similar (Droste) tiling. One full turn maps
+   // to a height of 1.0.
+   vec2 c = vec2(centerX, centerY);
+   vec2 p = _st - c;
+   float pi2 = 6.28318530718;
+   float rad = exp(p.x) * 0.5;
+   float ang = p.y * pi2;
+   return c + rad * vec2(cos(ang), sin(ang));`
+  },
+  {
+    name: 'fromLog',
+    type: 'coord',
+    inputs: [
+      {
+        type: 'float',
+        name: 'centerX',
+        default: 0.5,
+      },
+      {
+        type: 'float',
+        name: 'centerY',
+        default: 0.5,
+      }
+    ],
+    glsl:
+      `   // Leave log-polar space (exact inverse of toLog): complex log.
+   // Use the same center as the matching toLog(). The center is a singularity
+   // (log(0) = -inf), so expect noise at the exact center point.
+   vec2 c = vec2(centerX, centerY);
+   vec2 p = _st - c;
+   float pi2 = 6.28318530718;
+   float rad = max(length(p), 0.0001);
+   float ang = atan(p.y, p.x);
+   return c + vec2(log(rad / 0.5), ang / pi2);`
+  },
+  {
+    name: 'spiral',
+    type: 'coord',
+    inputs: [
+      {
+        type: 'float',
+        name: 'arms',
+        default: 1,
+      }
+    ],
+    glsl:
+      `   // Shear log-polar space: shift the log-radius in proportion to the angle,
+   // turning straight features into logarithmic spirals. Designed to sit
+   // between toLog() and fromLog(). One full turn zooms the radius by e^arms.
+   // Integer arms align the spiral seam with the radial period (x e), so paired
+   // with repeatX() or a self-similar (feedback) source the spiral closes
+   // seamlessly; non-integer arms leave an open spiral seam.
+   vec2 st = _st;
+   st.x += arms * (st.y - 0.5);
+   return st;`
+  },
+  {
     name: 'scroll',
     type: 'coord',
     inputs: [
