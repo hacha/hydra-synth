@@ -451,6 +451,37 @@ export default () => [
    return fract(st);`
   },
   {
+    name: 'mirrorRepeat',
+    type: 'coord',
+    inputs: [
+      {
+        type: 'float',
+        name: 'repeatX',
+        default: 3,
+      },
+      {
+        type: 'float',
+        name: 'repeatY',
+        default: 3,
+      },
+      {
+        type: 'float',
+        name: 'offsetX',
+        default: 0,
+      },
+      {
+        type: 'float',
+        name: 'offsetY',
+        default: 0,
+      }
+    ],
+    glsl:
+      `   vec2 st = _st * vec2(repeatX, repeatY);
+   st.x += step(1., mod(st.y,2.0)) * offsetX;
+   st.y += step(1., mod(st.x,2.0)) * offsetY;
+   return 1.0 - abs(1.0 - mod(st, 2.0));`
+  },
+  {
     name: 'modulateRepeat',
     type: 'combineCoord',
     inputs: [

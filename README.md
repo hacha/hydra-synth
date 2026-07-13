@@ -183,6 +183,22 @@ s0.initCam()
 src(s0).gamma(0.4).out()
 ```
 
+#### `mirrorRepeat()` Function
+Added `mirrorRepeat()`, a mirrored variant of `repeat()`. Instead of hard-tiling the coordinate space (`fract`), each tile is flipped relative to its neighbors, so tile edges line up seamlessly (`GL_MIRRORED_REPEAT` behavior). This avoids the visible seams that plain `repeat()` produces on non-tiling sources.
+
+**Parameters:** (same signature as `repeat()`)
+- `repeatX` (default: 3): Number of repetitions along X
+- `repeatY` (default: 3): Number of repetitions along Y
+- `offsetX` (default: 0): Offset applied to alternating rows
+- `offsetY` (default: 0): Offset applied to alternating columns
+
+**Example:**
+```javascript
+osc(20, 0.1, 1).mirrorRepeat(3, 3).out()
+// alias
+osc(20, 0.1, 1).mrep(3, 3).out()
+```
+
 ### Shorthand Function Aliases
 
 All of the following shorthand aliases are available in addition to the original function names. These aliases are particularly useful for live coding where brevity is important.
@@ -232,6 +248,7 @@ All `modulateXXX()` functions have `modXXX` aliases. Additionally, some have eve
 |----------|-------|
 | `pixelate()` | `pix()` |
 | `repeat()` | `rep()` |
+| `mirrorRepeat()` | `mrep()` |
 | `repeatX()` | `repX()` |
 | `repeatY()` | `repY()` |
 | `scroll()` | `scr()` |

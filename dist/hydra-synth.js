@@ -1568,6 +1568,8 @@ class GeneratorFactory {
         this.sourceClass.prototype.cont = this.sourceClass.prototype.contrast;
       } else if (method === 'repeat') {
         this.sourceClass.prototype.rep = this.sourceClass.prototype.repeat;
+      } else if (method === 'mirrorRepeat') {
+        this.sourceClass.prototype.mrep = this.sourceClass.prototype.mirrorRepeat;
       } else if (method === 'repeatX') {
         this.sourceClass.prototype.repX = this.sourceClass.prototype.repeatX;
       } else if (method === 'repeatY') {
@@ -2200,6 +2202,30 @@ var _default = () => [{
    st.x += step(1., mod(st.y,2.0)) * offsetX;
    st.y += step(1., mod(st.x,2.0)) * offsetY;
    return fract(st);`
+}, {
+  name: 'mirrorRepeat',
+  type: 'coord',
+  inputs: [{
+    type: 'float',
+    name: 'repeatX',
+    default: 3
+  }, {
+    type: 'float',
+    name: 'repeatY',
+    default: 3
+  }, {
+    type: 'float',
+    name: 'offsetX',
+    default: 0
+  }, {
+    type: 'float',
+    name: 'offsetY',
+    default: 0
+  }],
+  glsl: `   vec2 st = _st * vec2(repeatX, repeatY);
+   st.x += step(1., mod(st.y,2.0)) * offsetX;
+   st.y += step(1., mod(st.x,2.0)) * offsetY;
+   return 1.0 - abs(1.0 - mod(st, 2.0));`
 }, {
   name: 'modulateRepeat',
   type: 'combineCoord',

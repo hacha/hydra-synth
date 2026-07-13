@@ -123,6 +123,8 @@ class GeneratorFactory {
         this.sourceClass.prototype.cont = this.sourceClass.prototype.contrast
       } else if (method === 'repeat') {
         this.sourceClass.prototype.rep = this.sourceClass.prototype.repeat
+      } else if (method === 'mirrorRepeat') {
+        this.sourceClass.prototype.mrep = this.sourceClass.prototype.mirrorRepeat
       } else if (method === 'repeatX') {
         this.sourceClass.prototype.repX = this.sourceClass.prototype.repeatX
       } else if (method === 'repeatY') {
