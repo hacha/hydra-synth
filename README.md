@@ -233,7 +233,7 @@ Available variants are `forkBlend()`, `forkDiff()`, `forkAdd()`, `forkSub()`, `f
 src(s0).rotate().forkWith('blend', (c) => c.hue(0.3).kaleid(4), [0, 1])
 ```
 
-**Note:** the branch is a copy of the chain, so the original chain is never modified. The branched chain is compiled into the same shader, meaning the base chain is evaluated twice on the GPU.
+**Note:** the branch is a copy of the chain, so the original chain is never modified. The branched chain is compiled into the same shader, meaning the base chain is evaluated twice on the GPU. Chaining `fork()` compounds this: `N` forks evaluate the base chain `2^N` times.
 
 ### Shorthand Function Aliases
 

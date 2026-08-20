@@ -1428,7 +1428,7 @@ class GeneratorFactory {
   }
 
   init() {
-    const functions = (0, _glslFunctions.default)();
+    let functions = (0, _glslFunctions.default)();
     this.glslTransforms = {};
     this.generators = Object.entries(this.generators).reduce((prev, [method, transform]) => {
       this.changeListener({
@@ -1445,7 +1445,7 @@ class GeneratorFactory {
 
 
     if (Array.isArray(this.extendTransforms)) {
-      functions.concat(this.extendTransforms);
+      functions = functions.concat(this.extendTransforms);
     } else if (typeof this.extendTransforms === 'object' && this.extendTransforms.type) {
       functions.push(this.extendTransforms);
     }
@@ -1771,8 +1771,15 @@ GlslSource.prototype._clone = function () {
 
 
 GlslSource.prototype.forkWith = function (method, fn, ...args) {
-  if (typeof this[method] !== 'function') {
+  const transform = this.synth && this.synth.glslTransforms && this.synth.glslTransforms[method];
+
+  if (typeof this[method] !== 'function' || !transform) {
     console.warn(`fork: '${method}' is not a function`);
+    return this;
+  }
+
+  if (transform.type !== 'combine' && transform.type !== 'combineCoord') {
+    console.warn(`fork: '${method}' is a '${transform.type}' function, expected combine or combineCoord`);
     return this;
   }
 
@@ -1785,6 +1792,11 @@ GlslSource.prototype.forkWith = function (method, fn, ...args) {
 
   if (!branch) {
     console.warn('fork: the given function did not return a source');
+    return this;
+  }
+
+  if (branch === this) {
+    console.warn('fork: the given function returned the original chain (use the argument passed to it)');
     return this;
   }
 

@@ -17,7 +17,7 @@ class GeneratorFactory {
     this.init()
   }
   init() {
-    const functions = glslFunctions()
+    let functions = glslFunctions()
     this.glslTransforms = {}
     this.generators = Object.entries(this.generators).reduce((prev, [method, transform]) => {
       this.changeListener({ type: 'remove', synth: this, method })
@@ -33,7 +33,7 @@ class GeneratorFactory {
 
     // add user definied transforms
     if (Array.isArray(this.extendTransforms)) {
-      functions.concat(this.extendTransforms)
+      functions = functions.concat(this.extendTransforms)
     } else if (typeof this.extendTransforms === 'object' && this.extendTransforms.type) {
       functions.push(this.extendTransforms)
     }

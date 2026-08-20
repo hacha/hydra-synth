@@ -33,8 +33,13 @@ GlslSource.prototype._clone = function () {
 // is equivalent to
 // src(s0).rotate().blend(src(s0).rotate().hue().kaleid(), [0, 1])
 GlslSource.prototype.forkWith = function (method, fn, ...args) {
-  if (typeof this[method] !== 'function') {
+  const transform = this.synth && this.synth.glslTransforms && this.synth.glslTransforms[method]
+  if (typeof this[method] !== 'function' || !transform) {
     console.warn(`fork: '${method}' is not a function`)
+    return this
+  }
+  if (transform.type !== 'combine' && transform.type !== 'combineCoord') {
+    console.warn(`fork: '${method}' is a '${transform.type}' function, expected combine or combineCoord`)
     return this
   }
   if (typeof fn !== 'function') {
@@ -44,6 +49,10 @@ GlslSource.prototype.forkWith = function (method, fn, ...args) {
   const branch = fn(this._clone())
   if (!branch) {
     console.warn('fork: the given function did not return a source')
+    return this
+  }
+  if (branch === this) {
+    console.warn('fork: the given function returned the original chain (use the argument passed to it)')
     return this
   }
   return this[method](branch, ...args)
