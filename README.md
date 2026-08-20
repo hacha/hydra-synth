@@ -199,6 +199,42 @@ osc(20, 0.1, 1).mirrorRepeat(3, 3).out()
 osc(20, 0.1, 1).mrep(3, 3).out()
 ```
 
+#### `fork()` / `forkWith()` Chain Branching
+
+Added `fork()`, which branches the chain at that point, applies the given function to the branch, and combines the branch back into the chain. This removes the need to repeat the whole chain when you want to combine a source with a modified version of itself.
+
+```javascript
+// before: the base chain has to be written twice
+src(s0).rotate().colorama(0.1)
+  .blend(src(s0).rotate().colorama(0.1).hue(0.3).kaleid(4), [0, 1])
+  .out()
+
+// after
+src(s0).rotate().colorama(0.1)
+  .fork((c) => c.hue(0.3).kaleid(4), [0, 1])
+  .out()
+```
+
+**Parameters:**
+- `fn`: A function that receives a copy of the chain up to that point and returns the branched source
+- Remaining arguments are passed to the combine function (i.e. the blend amount)
+
+`fork()` blends the branch back in. A `fork` variant is generated for every combine / combineCoord function, so any of them can be used instead:
+
+```javascript
+src(s0).rotate().forkDiff((c) => c.hue(0.3))              // diff()
+src(s0).rotate().forkModulate((c) => c.kaleid(6), 0.1)    // modulate()
+src(s0).rotate().forkModRot((c) => c.posterize(3), 0.5)    // modulateRotate(), alias
+```
+
+Available variants are `forkBlend()`, `forkDiff()`, `forkAdd()`, `forkSub()`, `forkMult()`, `forkLayer()`, `forkMask()`, `forkModulate()` and the other `forkModulate*()` functions. A fork variant is generated for every shorthand alias as well, so `forkBle()`, `forkMul()`, `forkLay()`, `forkMod()`, `forkModRot()`, `forkModKal()` etc. are also available. `forkWith()` takes the combine function name as a string, which is useful for functions added via `extendTransforms`:
+
+```javascript
+src(s0).rotate().forkWith('blend', (c) => c.hue(0.3).kaleid(4), [0, 1])
+```
+
+**Note:** the branch is a copy of the chain, so the original chain is never modified. The branched chain is compiled into the same shader, meaning the base chain is evaluated twice on the GPU.
+
 ### Shorthand Function Aliases
 
 All of the following shorthand aliases are available in addition to the original function names. These aliases are particularly useful for live coding where brevity is important.

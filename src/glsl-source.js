@@ -18,6 +18,37 @@ GlslSource.prototype.addTransform = function (obj)  {
     this.transforms.push(obj)
 }
 
+// creates a copy of the chain up to this point, so that it can be branched
+// without modifying the original chain
+GlslSource.prototype._clone = function () {
+  const clone = Object.create(Object.getPrototypeOf(this))
+  Object.assign(clone, this)
+  clone.transforms = [...this.transforms]
+  return clone
+}
+
+// branches the chain up to this point, applies fn() to the branch,
+// and combines the result back into the chain using the given method.
+// i.e. src(s0).rotate().forkWith('blend', (c) => c.hue().kaleid(), [0, 1])
+// is equivalent to
+// src(s0).rotate().blend(src(s0).rotate().hue().kaleid(), [0, 1])
+GlslSource.prototype.forkWith = function (method, fn, ...args) {
+  if (typeof this[method] !== 'function') {
+    console.warn(`fork: '${method}' is not a function`)
+    return this
+  }
+  if (typeof fn !== 'function') {
+    console.warn('fork: expected a function that receives the branched chain')
+    return this
+  }
+  const branch = fn(this._clone())
+  if (!branch) {
+    console.warn('fork: the given function did not return a source')
+    return this
+  }
+  return this[method](branch, ...args)
+}
+
 GlslSource.prototype.out = function (_output) {
   var output = _output || this.defaultOutput
   var glsl = this.glsl(output)

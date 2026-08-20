@@ -38,7 +38,14 @@ class GeneratorFactory {
       functions.push(this.extendTransforms)
     }
 
-    return functions.map((transform) => this.setFunction(transform))
+    const generators = functions.map((transform) => this.setFunction(transform))
+
+    // fork() blends the branch back into the chain by default
+    if (this.sourceClass.prototype.forkBlend) {
+      this.sourceClass.prototype.fork = this.sourceClass.prototype.forkBlend
+    }
+
+    return generators
   }
 
   _addMethod(method, transform) {
@@ -157,6 +164,22 @@ class GeneratorFactory {
         this.sourceClass.prototype.lay = this.sourceClass.prototype.layer
       } else if (method === 'blend') {
         this.sourceClass.prototype.ble = this.sourceClass.prototype.blend
+      }
+
+      // add fork variants for combine functions, which branch the chain up to
+      // that point and combine the branch back in. i.e. forkBlend, forkDiff,
+      // forkModulate ... a fork variant is added for every alias as well,
+      // i.e. forkBle, forkMod, forkModRot
+      if (transform.type === 'combine' || transform.type === 'combineCoord') {
+        const proto = this.sourceClass.prototype
+        const fork = function (fn, ...args) {
+          return this.forkWith(method, fn, ...args)
+        }
+        Object.getOwnPropertyNames(proto)
+          .filter((name) => proto[name] === proto[method] && !name.startsWith('fork'))
+          .forEach((name) => {
+            proto['fork' + name.charAt(0).toUpperCase() + name.slice(1)] = fork
+          })
       }
     }
     return undefined
