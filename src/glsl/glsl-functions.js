@@ -832,10 +832,15 @@ export default () => [
     name: 'diff',
     type: 'combine',
     inputs: [
-
+      {
+        type: 'float',
+        name: 'amount',
+        default: 1,
+      }
     ],
     glsl:
-      `   return vec4(abs(_c0.rgb-_c1.rgb), max(_c0.a, _c1.a));`
+      `   vec4 diffColor = vec4(abs(_c0.rgb-_c1.rgb), max(_c0.a, _c1.a));
+   return _c0*(1.0-amount)+diffColor*amount;`
   },
   {
     name: 'modulate',

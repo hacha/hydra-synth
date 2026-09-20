@@ -235,6 +235,24 @@ src(s0).rotate().forkWith('blend', (c) => c.hue(0.3).kaleid(4), [0, 1])
 
 **Note:** the branch is a copy of the chain, so the original chain is never modified. The branched chain is compiled into the same shader, meaning the base chain is evaluated twice on the GPU. Chaining `fork()` compounds this: `N` forks evaluate the base chain `2^N` times.
 
+#### `diff()` Amount Parameter
+Added an `amount` parameter (default: `1`) to `diff()`. When `1`, behavior matches the original (the raw RGB difference). Lower values mix the difference back toward the original color, so the harsh inverted look of `diff()` can be dialed in as a subtle edge/contrast effect instead of being all-or-nothing.
+
+**Parameters:**
+- `amount` (default: 1): How much of the difference to blend in. `1.0` is the full difference (original behavior), `0.0` leaves the chain untouched, and values in between interpolate. Alpha is blended along with RGB, so `0.0` is an exact passthrough.
+
+**Example:**
+```javascript
+// full difference (same as before)
+osc(20, 0.1, 1).diff(noise(3), 1).out()
+
+// 30% of the difference mixed back over the original
+osc(20, 0.1, 1).diff(noise(3), 0.3).out()
+
+// works with fork() too - omit the amount for the original behavior
+src(s0).rotate().forkDiff((c) => c.hue(0.3), 0.5).out()
+```
+
 ### Shorthand Function Aliases
 
 All of the following shorthand aliases are available in addition to the original function names. These aliases are particularly useful for live coding where brevity is important.
