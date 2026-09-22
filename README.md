@@ -186,17 +186,24 @@ src(s0).gamma(0.4).out()
 #### `mirrorRepeat()` Function
 Added `mirrorRepeat()`, a mirrored variant of `repeat()`. Instead of hard-tiling the coordinate space (`fract`), each tile is flipped relative to its neighbors, so tile edges line up seamlessly (`GL_MIRRORED_REPEAT` behavior). This avoids the visible seams that plain `repeat()` produces on non-tiling sources.
 
-**Parameters:** (same signature as `repeat()`)
+**Parameters:**
 - `repeatX` (default: 3): Number of repetitions along X
 - `repeatY` (default: 3): Number of repetitions along Y
+- `curve` (default: 1): Warps the coordinate inside each tile. `1` is linear. Values `> 1` make the coordinate change faster toward the tile edges (the tile center is magnified and the edges are compressed, giving a bulging, lens-like look); values `< 1` do the opposite
 - `offsetX` (default: 0): Offset applied to alternating rows
 - `offsetY` (default: 0): Offset applied to alternating columns
+
+Note: unlike `repeat()`, the 3rd argument is `curve`, and the offsets come after it.
 
 **Example:**
 ```javascript
 osc(20, 0.1, 1).mirrorRepeat(3, 3).out()
 // alias
 osc(20, 0.1, 1).mrep(3, 3).out()
+// bulging tiles
+osc(20, 0.1, 1).mrep(3, 3, 2.5).out()
+// animated curve
+osc(20, 0.1, 1).mrep(3, 3, () => 1 + Math.sin(time) * 0.8).out()
 ```
 
 #### `fork()` / `forkWith()` Chain Branching
