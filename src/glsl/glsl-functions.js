@@ -843,6 +843,19 @@ export default () => [
    return _c0*(1.0-amount)+diffColor*amount;`
   },
   {
+    name: 'screen',
+    type: 'combine',
+    inputs: [
+      {
+        type: 'float',
+        name: 'amount',
+        default: 1,
+      }
+    ],
+    glsl:
+      `   return _c0*(1.0-amount) + (1.0-(1.0-_c0)*(1.0-_c1))*amount;`
+  },
+  {
     name: 'modulate',
     type: 'combineCoord',
     inputs: [

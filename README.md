@@ -253,6 +253,20 @@ osc(20, 0.1, 1).diff(noise(3), 0.3).out()
 src(s0).rotate().forkDiff((c) => c.hue(0.3), 0.5).out()
 ```
 
+#### `screen()` Function
+Added `screen()`, a combine function applying the screen blend mode (`1-(1-a)(1-b)`). Unlike `add()`, which clips hard at `1.0` and blows out highlights, `screen()` approaches `1.0` asymptotically, so bright regions keep their gradation instead of flattening out.
+
+**Parameters:**
+- `texture`: The texture to screen with
+- `amount` (default: 1): Mix between the original and the screened result. `1.0` is the full screen blend, `0.0` leaves the chain untouched, and values in between interpolate. Alpha is screened along with RGB.
+
+**Note:** inputs are expected to be in `[0,1]`. Values above `1` (e.g. after `brightness()`) can behave unintuitively since the blend formula relies on that range.
+
+**Example:**
+```javascript
+osc(10).screen(noise(3), 0.8).out()
+```
+
 ### Shorthand Function Aliases
 
 All of the following shorthand aliases are available in addition to the original function names. These aliases are particularly useful for live coding where brevity is important.
