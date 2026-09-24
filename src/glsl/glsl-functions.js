@@ -1126,7 +1126,8 @@ export default () => [
       }
     ],
     glsl:
-      `   vec3 c = _rgbToHsv(_c0.rgb);
+      `   if (amount == 0.0) return _c0;
+   vec3 c = _rgbToHsv(_c0.rgb);
    c += vec3(amount);
    c = _hsvToRgb(c);
    c = fract(c);
