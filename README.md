@@ -286,6 +286,17 @@ Added `screen()`, a combine function applying the screen blend mode (`1-(1-a)(1-
 osc(10).screen(noise(3), 0.8).out()
 ```
 
+#### `colorama()` Zero Amount
+`colorama(0)` now returns the input unchanged. In the original, the final `fract()` wrapped any channel at exactly `1.0` down to `0.0` (e.g. white turned black), so even `0` altered the image. This makes it safe to drive `amount` with values that rest at zero, such as audio.
+
+**Note:** only `0` is special-cased. Channels at or near `1.0` still wrap as soon as `amount` moves slightly away from `0`, so bright regions can jump abruptly — this is inherent to colorama's RGB-space wrap.
+
+**Example:**
+```javascript
+// no effect while silent, colorama kicks in with the audio
+osc(10, 0.1, 1).colorama(() => a.fft[0] * 0.5).out()
+```
+
 ### Shorthand Function Aliases
 
 All of the following shorthand aliases are available in addition to the original function names. These aliases are particularly useful for live coding where brevity is important.
