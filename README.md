@@ -170,6 +170,18 @@ osc(20, 0.1, 1).kaleid(6, 0.5).out()
 osc(20, 0.1, 1).modulateKaleid(noise(3), 6, 0.5).out()
 ```
 
+#### `kaleid()` Amount Parameter
+Added an `amount` parameter (default: `1`) to `kaleid()`, so the kaleidoscope can be switched on and off (e.g. in time with the beat) without `fork()`. `.fork((c) => c.kaleid(), [0, 1])` evaluates the base chain twice per pixel and blends the two results, whereas `amount` mixes the coordinates, so the base chain is only evaluated once.
+
+**Parameters:**
+- `amount` (default: 1): `1.0` is the full kaleidoscope (original behavior), `0.0` leaves the coordinates untouched (exact passthrough). Values in between interpolate the *coordinates*, not the colors, so they produce a warping morph rather than the cross-fade you get from `fork()`.
+
+**Example:**
+```javascript
+// toggle the kaleidoscope on and off
+osc(20, 0.1, 1).kaleid(4, 0, [0, 1]).out()
+```
+
 #### `gamma()` Function
 Added `gamma()` for gamma correction. Applies `pow(color, amount)` per channel, lifting shadows and midtones while keeping pure black and white unchanged — unlike `brightness()`, which adds a flat offset and can blow out highlights. This makes it well suited to brightening dark camera input (e.g. low-light club footage) so detail becomes visible without clipping bright lights.
 
