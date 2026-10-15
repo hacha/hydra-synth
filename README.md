@@ -297,6 +297,29 @@ osc(10).screen(noise(3), 0.8).out()
 osc(10, 0.1, 1).colorama(() => a.fft[0] * 0.5).out()
 ```
 
+#### `pick()` Function
+Added `pick(index, fade, scene0, scene1, ...)`, a source function that shows the scene numbered by the integer part of `index`, and cross-fades linearly from the previous scene to the new one over `fade` beats whenever the number changes. Ported from Neodelic.
+
+**Parameters:**
+- `index`: Scene number. The fraction is truncated, out-of-range values clamp to the first/last scene, and `NaN` picks scene 0. Accepts a number, a function, or an array (`.smooth()` etc. have no effect since only the integer part is used).
+- `fade` (default: 0): Fade length in beats — the same unit as one array step (`time * bpm / 60`), so it follows `bpm`. `0` switches instantly. A negative constant throws an error.
+- `scene0, scene1, ...`: Chains or buffers (`o1` is the same as `src(o1)`). At least one.
+
+**Behavior:**
+- Jumping between distant numbers (e.g. 0 → 2) fades directly, without passing the scenes in between.
+- If the number returns to the previous scene mid-fade, the fade reverses from the current mix (no jump). If it changes to a third scene, the fade restarts from whichever of the two scenes currently weighs more (the image jumps here).
+- The first frame, and re-evaluating the code, start at the current scene without fading.
+- Internally it becomes `scene0.blend(scene1, w1).blend(scene2, w2)...` with weights solved on the CPU each frame, so **every scene is rendered every frame** (same GPU cost as a hand-written blend chain). A constant `index` keeps only that scene.
+
+**Example:**
+```javascript
+// sequence with an array: one step per beat, 0.5-beat cross-fades
+pick([0, 1, 0, 0, 2], 0.5, src(o0), src(o1), src(o1).kaleid()).out()
+
+// switch by hand or with audio, 2-beat fades
+pick(() => a.fft[0] > 0.5 ? 1 : 0, 2, osc(), noise(3)).kaleid().out()
+```
+
 ### Shorthand Function Aliases
 
 All of the following shorthand aliases are available in addition to the original function names. These aliases are particularly useful for live coding where brevity is important.

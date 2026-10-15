@@ -10,6 +10,7 @@ import ArrayUtils from './lib/array-utils.js'
 import Sandbox from './eval-sandbox.js'
 import Generator from './generator-factory.js'
 import TextSource from './text-source.js'
+import createPick from './pick.js'
 import regl from 'regl'
 // const window = global.window
 
@@ -105,6 +106,7 @@ class HydraRenderer {
     this._initSources(numSources)
     this._generateGlslTransforms()
     this._initTextGenerator()
+    this._initPickGenerator()
 
     this.synth.screencap = () => {
       this.saveFrame = true
@@ -434,6 +436,11 @@ class HydraRenderer {
 
     this.synth.text = textFunc
     if (this.sandbox) this.sandbox.add('text')
+  }
+
+  _initPickGenerator () {
+    this.synth.pick = createPick((buf) => this.synth.src(buf))
+    if (this.sandbox) this.sandbox.add('pick')
   }
 
   _render (output) {
